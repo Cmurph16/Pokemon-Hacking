@@ -63,3 +63,10 @@ def setMaxHealth(orderInParty, value):
         print('Max HP of pokemon {} set to {}'.format(orderInParty, value))
     else:
         print('[!] Error: Max HP of pokemon {} not set'.format(orderInParty))
+
+def add_xp(orderInParty, amountToAdd):
+    if (orderInParty > party.getNumberOfPartyMembers() or orderInParty < 1):
+        print("[!] Can't add XP to Pokemon not in party. Supply a number between {} and 1".format(party.getNumberOfPartyMembers()))
+        sys.exit(1)
+    
+    

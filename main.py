@@ -18,6 +18,9 @@ def getLetterValuePairing():
         counter += 1
     return letterDict
 
+# TODO - update writeName so it clears rest of name space
+#      - currently only changes characters in the length of name. Causes issues when longer names go to shorter names
+
 # Updates the player name in the game
 def writeName(name,rival=False):
     if (len(name) != 7):
@@ -109,7 +112,7 @@ def getFilename():
 def main():
     party.init(getFilename())
     pokemon.init(getFilename())
-    writeName('ConnorM')
+    # writeName('ConnorM')
     # writeName('JennieF', True)
     setMoney("999999")
     pokemon.setMaxHealth(1,999)
