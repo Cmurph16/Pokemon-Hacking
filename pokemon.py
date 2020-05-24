@@ -9,10 +9,15 @@ def init(inputFile):
     global fileName
     fileName = inputFile
 
-def fullyRecoverHealth(orderInParty):
+# Checks to make sure the specified pokemon exists in the party
+def checkValidPokemon(orderInParty):
     if (orderInParty > party.getNumberOfPartyMembers() or orderInParty < 1):
         print('[!] Can only set max health on a pokemon in the party. Supply a number between {} and 1'.format(party.getNumberOfPartyMembers()))
         sys.exit(1)
+
+def fullyRecoverHealth(orderInParty):
+    checkValidPokemon(orderInParty)
+
     # set offset variables and other constants
     maxHPoffset = 0x22
     currentHPoffset = 0x01
@@ -38,9 +43,7 @@ def fullyRecoverHealth(orderInParty):
         print('HP of pokemon {} was set to max value'.format(orderInParty))
     
 def setMaxHealth(orderInParty, value):
-    if (orderInParty > party.getNumberOfPartyMembers() or orderInParty < 1):
-        print('[!] Can only set max health on a pokemon in the party. Supply a number between {} and 1'.format(party.getNumberOfPartyMembers()))
-        sys.exit(1)
+    checkValidPokemon(orderInParty)
     
     pokemonPartyDataStart = 0x2f34
     maxHPoffset = 0x22
@@ -64,6 +67,27 @@ def setMaxHealth(orderInParty, value):
     else:
         print('[!] Error: Max HP of pokemon {} not set'.format(orderInParty))
 
+# Removes the major status conditions of the specified pokemon
+# As of now does not fix confusion
+def healStatus(orderInParty):
+    checkValidPokemon(orderInParty)
+
+    pokemonPartyDataStart = 0x2f34
+    lengthPokemonData = 44
+    statusConditionOffset = 0x04
+
+    pokemonStatusLocation = [pokemonPartyDataStart + ((orderInParty - 1) * lengthPokemonData) + statusConditionOffset]
+
+    cleanStatus = [0x00]
+
+    if(main.writeToRam(main.getFilename(), pokemonStatusLocation, cleanStatus) == 0):
+        print('All status conditions of pokemon {} were healed'.format(orderInParty))
+    else:
+        print('[!] Error: Status conditions of pokemon {} were not fixed'.format(orderInParty))
+
+
+
+# *** NOT DONE ***
 def add_xp(orderInParty, amountToAdd):
     if (orderInParty > party.getNumberOfPartyMembers() or orderInParty < 1):
         print("[!] Can't add XP to Pokemon not in party. Supply a number between {} and 1".format(party.getNumberOfPartyMembers()))
