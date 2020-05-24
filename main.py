@@ -18,14 +18,16 @@ def getLetterValuePairing():
         counter += 1
     return letterDict
 
-# TODO - update writeName so it clears rest of name space
-#      - currently only changes characters in the length of name. Causes issues when longer names go to shorter names
-
 # Updates the player name in the game
 def writeName(name,rival=False):
-    if (len(name) != 7):
-        print('[!] Error: length of name to write is not 7. Other lengths not implemented yet')
+    if (len(name) > 10):
+        print('[!] Error: length of name to write is too long. Max length is 10')
         sys.exit(1)
+
+    if (len(name) < 1):
+        print('[!] Error: length of name to write is too short. Name must be at least one character')
+        sys.exit(1)
+
     letterPairing = getLetterValuePairing()
     name = name.upper()
     bytesToAdd = bytearray()
@@ -33,11 +35,23 @@ def writeName(name,rival=False):
     for letter in name:
         bytesToAdd.append(letterPairing[letter])
 
-    # bytes where the name is saved in memory
-    nameBytes = [0x2598, 0x2599, 0x259a, 0x259b, 0x259c, 0x259d, 0x259e]
+    # add in terminating character
+    bytesToAdd.append(0x50)
 
-    if (rival==True):
-        nameBytes = [0x25f6, 0x25f7, 0x25f8, 0x25f9, 0x25fa, 0x25fb, 0x25fc]
+    # add in trailing zeroes in the name buffer
+    while (len(bytesToAdd) < 11):
+        bytesToAdd.append(0x00)
+
+    # bytes where the name is saved in memory
+    nameBytes = []
+    firstNameByte = 0x2598
+    if (rival == True):
+        firstNameByte = 0x25f6
+    lengthOfNameBuffer = 0xb
+    for offset in range(0x0, lengthOfNameBuffer):
+        nameBytes.append(firstNameByte+offset)
+
+    print(nameBytes)
     
     if (writeToRam(getFilename(), nameBytes, bytesToAdd) == 0):
         print('{} written as name to game'.format(name))
@@ -109,10 +123,13 @@ def fixChecksum():
 def getFilename():
     return sys.argv[1]
 
-def main():
+def main(): 
+    if(len(sys.argv) == 1):
+        print('Usage: main.py <name of gameboy file>')
+        sys.exit(1)
     party.init(getFilename())
     pokemon.init(getFilename())
-    # writeName('ConnorM')
+    writeName('C')
     # writeName('JennieF', True)
     setMoney("999999")
     pokemon.setMaxHealth(1,999)
