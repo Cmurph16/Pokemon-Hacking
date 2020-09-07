@@ -85,6 +85,25 @@ def healStatus(orderInParty):
     else:
         print('[!] Error: Status conditions of pokemon {} were not fixed'.format(orderInParty))
 
+def setPerfectIVs(orderInParty):
+    checkValidPokemon(orderInParty)
+
+    pokemonPartyDataStart = 0x2f34
+    lengthPokemonData = 44
+    ivOffset = 0x1b
+
+    ivLocationStart = pokemonPartyDataStart + ((orderInParty - 1) * lengthPokemonData) + ivOffset
+
+    ivBytes = [ivLocationStart, ivLocationStart + 1]
+
+    perfectIvs = [0xff, 0xff]
+
+    if(main.writeToRam(main.getFilename(), ivBytes, perfectIvs) == 0):
+        print("Pokemon in position {} now has perfect IV's".format(orderInParty))
+    else:
+        print("[!] Error: IV's of pokemon {} were not set".format(orderInParty))
+
+
 
 
 # *** NOT DONE ***

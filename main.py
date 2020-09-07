@@ -135,6 +135,7 @@ def main():
     pokemon.setMaxHealth(1,999)
     pokemon.fullyRecoverHealth(1)
     pokemon.healStatus(1)
+    pokemon.setPerfectIVs(1)
     fixChecksum()
 
 if __name__ == '__main__':
