@@ -130,7 +130,6 @@ def main():
     party.init(getFilename())
     pokemon.init(getFilename())
     writeName('C')
-    # writeName('JennieF', True)
     setMoney("999999")
     pokemon.setMaxHealth(1,999)
     pokemon.fullyRecoverHealth(1)
